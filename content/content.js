@@ -217,7 +217,9 @@ function runPendingScans() {
 }
 
 function reportBadge() {
-  chrome.runtime.sendMessage({ type: 'setBadge', count: pageCounts.size });
+  chrome.runtime.sendMessage({ type: 'setBadge', count: pageCounts.size }, () => {
+    void chrome.runtime.lastError;
+  });
 }
 
 // ── TreeWalker Scan ───────────────────────────────────────────────────────────
