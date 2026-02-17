@@ -310,6 +310,27 @@
       font-size: 10.5px;
       color: #bbb;
     }
+
+    /* ── Reset ── */
+    .reset-bar {
+      padding: 8px 14px 10px;
+      text-align: center;
+      border-top: 1px solid #eee;
+    }
+    #resetBtn {
+      font-size: 11px;
+      color: #999;
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    #resetBtn:hover {
+      color: #c00;
+      border-color: #c00;
+    }
   </style>
 </head>
 <body>
@@ -416,6 +437,10 @@
        target="_blank">View full Wikipedia list →</a>
     <a href="https://github.com/krismajean/manifest-extension"
        target="_blank">GitHub →</a>
+  </div>
+
+  <div class="reset-bar">
+    <button id="resetBtn">Reset to defaults</button>
   </div>
 
   <script src="popup.js"></script>

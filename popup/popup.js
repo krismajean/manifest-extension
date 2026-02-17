@@ -105,6 +105,18 @@ function updateIconPreview(color) {
   if (band) band.setAttribute('fill', color);
 }
 
+const DEFAULTS = {
+  enabled: true,
+  showHighlight: true,
+  showIcon: true,
+  highlightColor: '#ffe066',
+  iconColor: '#ffe066',
+};
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  chrome.storage.local.set(DEFAULTS, () => window.location.reload());
+});
+
 function updateSubToggles(enabled) {
   const el = document.getElementById('subToggles');
   el.style.opacity = enabled ? '' : '0.4';
