@@ -169,12 +169,15 @@ function injectStyles() {
       border-radius: 2px;
       padding: 0 1px;
       cursor: pointer;
+      outline: 1.5px solid #cc0000;
+      outline-offset: 1px;
       transition: color 0.2s, background 0.2s;
       user-select: none;
     }
     .manifest-blackout .${SPAN_CLASS}.manifest-highlighted:hover {
       background: #333 !important;
       color: #fff !important;
+      outline-color: #ff4444;
     }
   `;
   (document.head || document.documentElement).appendChild(style);
