@@ -1,5 +1,7 @@
 # Manifest
 
+![Manifest](icons/manifest-header.png)
+
 > *Bringing light to the darkness*
 
 Manifest highlights names from the [Epstein files](https://en.wikipedia.org/wiki/List_of_people_named_in_the_Epstein_files) as you browse. Click the icon next to any name to go directly to their entry on Wikipedia.
@@ -68,6 +70,7 @@ manifest-extension/
 │   └── content.js             # Page scanner, DOM injection, highlight logic
 ├── icons/
 │   ├── manifest.svg           # Inline icon shown next to names
+│   ├── manifest-header.png    # README header image
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
