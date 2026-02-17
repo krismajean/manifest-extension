@@ -157,10 +157,7 @@ function runPendingScans() {
 }
 
 function reportBadge() {
-  // Total mentions across all names on this page
-  let total = 0;
-  for (const count of pageCounts.values()) total += count;
-  chrome.runtime.sendMessage({ type: 'setBadge', count: total });
+  chrome.runtime.sendMessage({ type: 'setBadge', count: pageCounts.size });
 }
 
 // ── TreeWalker Scan ───────────────────────────────────────────────────────────
