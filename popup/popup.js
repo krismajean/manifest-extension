@@ -9,6 +9,7 @@ const COLORS = [
   { hex: '#ff9999', label: 'Red' },
   { hex: '#da90f5', label: 'Purple' },
   { hex: '#ffffff', label: 'White' },
+  { hex: '#000000', label: 'Blackout — hover to reveal' },
 ];
 
 // ── Storage: prefs + status ───────────────────────────────────────────────────
@@ -73,6 +74,10 @@ function buildSwatches(containerId, activeColor, onChange) {
     swatch.className = 'swatch' + (hex === activeColor ? ' active' : '');
     swatch.style.background = hex;
     swatch.style.boxShadow = hex === '#ffffff' ? 'inset 0 0 0 1px #ccc' : 'none';
+    if (hex === '#000000') {
+      swatch.style.outline = '1.5px dashed #999';
+      swatch.style.outlineOffset = '1px';
+    }
     swatch.title = label;
     swatch.addEventListener('click', () => {
       container.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
