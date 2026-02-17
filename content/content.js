@@ -217,6 +217,7 @@ function runPendingScans() {
 }
 
 function reportBadge() {
+  if (!chrome.runtime?.id) return; // extension context invalidated
   try {
     chrome.runtime.sendMessage({ type: 'setBadge', count: pageCounts.size }, () => {
       void chrome.runtime.lastError;
@@ -345,6 +346,7 @@ function setupObserver() {
 function undoHighlighting() {
   observer.disconnect();
   pageCounts.clear();
+  if (!chrome.runtime?.id) return;
   try {
     chrome.runtime.sendMessage({ type: 'setBadge', count: 0 }, () => {
       void chrome.runtime.lastError;
