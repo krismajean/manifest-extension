@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Manifest",
+  "version": "1.0.0",
+  "description": "Bringing light to the darkness — Manifest highlights names from the Epstein files as you browse, so you can see how often these people appear on the pages you read. Matches are by name only, so someone sharing a name with a listed person may occasionally be tagged; click the icon to view their Wikipedia entry and judge for yourself.",
+  "permissions": ["storage", "alarms", "tabs", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "*://en.wikipedia.org/wiki/List_of_people_named_in_the_Epstein_files*"
+      ],
+      "js": ["content/names.js", "content/content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/wiki-w.svg"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    },
+    "default_popup": "popup/popup.html",
+    "default_title": "Manifest"
+  }
+}
