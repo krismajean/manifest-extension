@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Manifest",
+  "name": "Manifest BETA",
   "version": "1.0.0",
-  "description": "Highlights names from the Epstein files as you browse. Click the icon next to any name to go to their Wikipedia entry.",
+  "description": "THIS EXTENSION IS FOR BETA TESTING. Highlights names from the Epstein files as you browse.",
   "permissions": ["storage", "alarms", "tabs", "scripting"],
   "host_permissions": ["<all_urls>"],
   "background": {
