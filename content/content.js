@@ -343,7 +343,9 @@ function setupObserver() {
 function undoHighlighting() {
   observer.disconnect();
   pageCounts.clear();
-  chrome.runtime.sendMessage({ type: 'setBadge', count: 0 });
+  chrome.runtime.sendMessage({ type: 'setBadge', count: 0 }, () => {
+    void chrome.runtime.lastError;
+  });
   document.querySelectorAll(`.${SPAN_CLASS}`).forEach(span => {
     const parent = span.parentNode;
     if (!parent) return;
