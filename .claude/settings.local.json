@@ -11,7 +11,12 @@
       "Bash(git -C /Users/bbp/Documents/workspace/chrome/epstein status)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git -C /Users/bbp/Documents/workspace/chrome/epstein remote -v)",
+      "Bash(git -C /Users/bbp/Documents/workspace/chrome/epstein push origin master)",
+      "Bash(git -C /Users/bbp/Documents/workspace/chrome/epstein add README.md)",
+      "Bash(git -C:*)",
+      "Bash(git push:*)"
     ]
   }
 }
