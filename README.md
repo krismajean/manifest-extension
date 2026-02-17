@@ -81,6 +81,12 @@ manifest-extension/
 
 ---
 
+## Privacy
+
+Manifest does not collect, store, or transmit any personal data. Page text is processed locally on your device. The only external request is to the Wikipedia API to fetch the name list. See [PRIVACY.md](PRIVACY.md) for full details.
+
+---
+
 ## Source
 
 Name list sourced from Wikipedia:
