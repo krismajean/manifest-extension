@@ -70,9 +70,9 @@ function applyDisplayPrefs(prefs) {
 function applyColors(prefs) {
   const highlightColor = prefs.highlightColor || '#ffe066';
   const iconColor      = prefs.iconColor      || '#ffe066';
-  const isBlackout     = highlightColor === '#000000';
+  const isRedact     = highlightColor === '#000000';
 
-  document.body.classList.toggle('manifest-blackout', isBlackout);
+  document.body.classList.toggle('manifest-redact', isRedact);
 
   let colorStyle = document.getElementById('manifest-color-styles');
   if (!colorStyle) {
@@ -162,8 +162,8 @@ function injectStyles() {
       border-radius: 2px;
       padding: 0 1px;
     }
-    /* Blackout / redaction mode */
-    .manifest-blackout .${SPAN_CLASS}.manifest-highlighted {
+    /* Redact mode */
+    .manifest-redact .${SPAN_CLASS}.manifest-highlighted {
       background: #000 !important;
       color: transparent !important;
       border-radius: 2px;
@@ -174,7 +174,7 @@ function injectStyles() {
       transition: color 0.2s, background 0.2s;
       user-select: none;
     }
-    .manifest-blackout .${SPAN_CLASS}.manifest-highlighted:hover {
+    .manifest-redact .${SPAN_CLASS}.manifest-highlighted:hover {
       background: #333 !important;
       color: #fff !important;
       outline-color: #ff4444;

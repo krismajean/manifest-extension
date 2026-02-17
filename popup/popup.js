@@ -9,7 +9,7 @@ const COLORS = [
   { hex: '#ff9999', label: 'Red' },
   { hex: '#da90f5', label: 'Purple' },
   { hex: '#ffffff', label: 'White' },
-  { hex: '#000000', label: 'Blackout — hover to reveal' },
+  { hex: '#000000', label: 'Redact — hover to reveal' },
 ];
 
 // ── Storage: prefs + status ───────────────────────────────────────────────────
