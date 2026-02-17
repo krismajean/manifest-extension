@@ -28,7 +28,6 @@ chrome.storage.local.get(
     }
 
     document.getElementById('status').textContent = `${count} names tracked · ${sourceStr}`;
-    document.getElementById('count').textContent = `${count} names`;
 
     // Main enable toggle
     const cbEnabled = document.getElementById('enabled');
