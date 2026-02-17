@@ -130,6 +130,8 @@ function injectStyles() {
 }
 
 // ── Scanning Queue ────────────────────────────────────────────────────────────
+let debounceTimer = null;
+
 function queueScan(root) {
   if (!root) return;
   pendingRoots.add(root);
@@ -138,7 +140,11 @@ function queueScan(root) {
 
 function scheduleScan() {
   if (isProcessing) return;
-  requestAnimationFrame(runPendingScans);
+  // Debounce: wait 120ms after the last mutation before scanning.
+  // This lets sites that add a node then fill its text in a subsequent
+  // task (e.g. Time.com lazy-loaded cards) settle before we walk the DOM.
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runPendingScans, 120);
 }
 
 function runPendingScans() {
