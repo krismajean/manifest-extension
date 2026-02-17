@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Manifest",
   "version": "1.0.0",
-  "description": "Manifest highlights names from the Epstein files as you browse. Click the icon next to any name to go directly to their entry on Wikipedia.",
+  "description": "Highlights names from the Epstein files as you browse. Click the icon next to any name to go to their Wikipedia entry.",
   "permissions": ["storage", "alarms", "tabs", "scripting"],
   "host_permissions": ["<all_urls>"],
   "background": {
