@@ -28,6 +28,7 @@ const HARDCODED_NAMES = [
   { name: "John de Jongh Jr.", anchor: "John_de_Jongh_Jr." },
   { name: "David A. Ross", anchor: "David_A._Ross" },
   { name: "Guy Laliberté", anchor: "Guy_Laliberté" },
+  { name: "Jeffrey Epstein", anchor: "Jeffrey_Epstein" },
   { name: "Ghislaine Maxwell", anchor: "Ghislaine_Maxwell" },
   { name: "Miroslav Lajčák", anchor: "Miroslav_Lajčák" },
   { name: "Nathan Myhrvold", anchor: "Nathan_Myhrvold" },

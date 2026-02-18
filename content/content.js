@@ -54,8 +54,8 @@ async function init() {
     if (changes.showIcon || changes.showHighlight) {
       chrome.storage.local.get(['showIcon', 'showHighlight'], applyDisplayPrefs);
     }
-    if (changes.highlightColor || changes.iconColor) {
-      chrome.storage.local.get(['highlightColor', 'iconColor'], applyColors);
+    if (changes.highlightColor || changes.iconColor || changes.showHighlight) {
+      chrome.storage.local.get(['highlightColor', 'iconColor', 'showHighlight'], applyColors);
     }
   });
 }
@@ -70,7 +70,8 @@ function applyDisplayPrefs(prefs) {
 function applyColors(prefs) {
   const highlightColor = prefs.highlightColor || '#ffe066';
   const iconColor      = prefs.iconColor      || '#ffe066';
-  const isRedact     = highlightColor === '#000000';
+  const isRedact       = highlightColor === '#000000';
+  const showHighlight  = prefs.showHighlight !== false;
 
   document.body.classList.toggle('manifest-redact', isRedact);
 
@@ -89,6 +90,8 @@ function applyColors(prefs) {
     `</svg>`
   );
 
+  // The hide rule must come AFTER the color rule in the same style element
+  // so it wins the cascade when showHighlight is off.
   colorStyle.textContent = `
     .${SPAN_CLASS}.manifest-highlighted {
       background: ${highlightColor} !important;
@@ -96,11 +99,20 @@ function applyColors(prefs) {
     .${ICON_CLASS} {
       background-image: url('data:image/svg+xml,${svgIcon}') !important;
     }
+    ${!showHighlight ? `
+    .${SPAN_CLASS}.manifest-highlighted {
+      background: none !important;
+      color: inherit !important;
+    }` : ''}
   `;
 }
 
 // ── Pattern Building ──────────────────────────────────────────────────────────
 function buildPattern(names) {
+  // If cached list is empty or too small (e.g. bad API response), use hardcoded list so extension still works
+  if (!names?.length || names.length < 10) {
+    names = HARDCODED_NAMES;
+  }
   // Sort longest-first so "Donald Trump Jr. and Eric Trump" is tried before "Donald Trump"
   const sorted = [...names].sort((a, b) => b.name.length - a.name.length);
 
@@ -152,10 +164,7 @@ function injectStyles() {
     .manifest-hide-icon .${ICON_CLASS} {
       display: none !important;
     }
-    .manifest-hide-highlight .${SPAN_CLASS} {
-      background: none !important;
-      color: inherit !important;
-    }
+    /* hide-highlight is re-applied via applyColors to ensure correct cascade */
     .${SPAN_CLASS}.manifest-highlighted {
       background: #ffe066;
       color: #000;

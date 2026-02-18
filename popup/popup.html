@@ -113,6 +113,21 @@
       font-size: 10.5px;
       color: #999;
     }
+    .refresh-row {
+      margin-top: 10px;
+    }
+    #refreshListBtn {
+      font-size: 11px;
+      color: #2d6a9f;
+      background: #e8f0fe;
+      border: 1px solid #2d6a9f;
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+    #refreshListBtn:hover { background: #d2e3fc; }
+    #refreshListBtn:disabled { opacity: 0.6; cursor: not-allowed; }
     .sub-toggles {
       margin-top: 10px;
       padding-top: 10px;
@@ -417,6 +432,16 @@
       </label>
     </div>
     <div class="status" id="status">Loading…</div>
+    <div class="refresh-row">
+      <button type="button" id="refreshListBtn">Sync from Wikipedia</button>
+    </div>
+    <div class="toggle-row sub" style="margin-top:8px;">
+      <label for="autoSyncWiki">Auto-sync from Wikipedia (every 24 hours)</label>
+      <label class="switch small">
+        <input type="checkbox" id="autoSyncWiki">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
 
   <div class="footer">

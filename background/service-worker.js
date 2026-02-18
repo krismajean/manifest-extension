@@ -48,29 +48,78 @@ async function fetchAndCacheNames() {
   }
 }
 
-chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-  if (reason === 'install' || reason === 'update') {
-    await fetchAndCacheNames();
+// No fetch on install — Wikipedia is an optional permission, granted when user clicks "Refresh list".
+chrome.runtime.onInstalled.addListener(() => {});
+
+const ALARM_NAME = 'refreshEpsteinNames';
+const ALARM_PERIOD_MINUTES = 1440; // 24 hours
+
+// On startup: if permission + autoSync enabled, refresh if stale and ensure alarm exists.
+chrome.runtime.onStartup.addListener(async () => {
+  const granted = await chrome.permissions.contains({ origins: ['https://en.wikipedia.org/*'] });
+  if (!granted) return;
+  const { namesFetchedAt, autoSyncWiki } = await chrome.storage.local.get(['namesFetchedAt', 'autoSyncWiki']);
+  if (autoSyncWiki) {
+    chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_PERIOD_MINUTES });
+    if (!namesFetchedAt || Date.now() - namesFetchedAt > CACHE_MAX_AGE_MS) {
+      await fetchAndCacheNames();
+    }
   }
-  // Schedule a daily refresh
-  chrome.alarms.create('refreshEpsteinNames', { periodInMinutes: 1440 });
 });
 
-chrome.runtime.onStartup.addListener(async () => {
+// Auto-sync: only runs when optional permission and autoSync are both enabled.
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name !== ALARM_NAME) return;
+  const granted = await chrome.permissions.contains({ origins: ['https://en.wikipedia.org/*'] });
+  if (!granted) return;
+  const { autoSyncWiki } = await chrome.storage.local.get('autoSyncWiki');
+  if (!autoSyncWiki) return;
   const { namesFetchedAt } = await chrome.storage.local.get('namesFetchedAt');
   if (!namesFetchedAt || Date.now() - namesFetchedAt > CACHE_MAX_AGE_MS) {
     await fetchAndCacheNames();
   }
 });
 
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'refreshEpsteinNames') {
-    fetchAndCacheNames();
+// ── Messages: badge + refresh names ───────────────────────────────────────────
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === 'refreshNames') {
+    chrome.permissions.contains({ origins: ['https://en.wikipedia.org/*'] }).then((granted) => {
+      if (!granted) {
+        sendResponse({ ok: false, error: 'Permission not granted' });
+        return;
+      }
+      fetchAndCacheNames()
+        .then(async () => {
+          const { epsteinNames, namesFetchedAt, autoSyncWiki } = await chrome.storage.local.get([
+            'epsteinNames',
+            'namesFetchedAt',
+            'autoSyncWiki',
+          ]);
+          if (autoSyncWiki) {
+            chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_PERIOD_MINUTES });
+          }
+          sendResponse({ ok: true, count: epsteinNames?.length ?? 0, namesFetchedAt });
+        })
+        .catch((err) => sendResponse({ ok: false, error: err.message }));
+    });
+    return true; // keep channel open for async sendResponse
   }
-});
 
-// ── Badge ─────────────────────────────────────────────────────────────────────
-chrome.runtime.onMessage.addListener((msg, sender) => {
+  if (msg.type === 'setAutoSync') {
+    const enabled = !!msg.enabled;
+    if (enabled) {
+      chrome.permissions.contains({ origins: ['https://en.wikipedia.org/*'] }).then((granted) => {
+        if (granted) {
+          chrome.alarms.create(ALARM_NAME, { periodInMinutes: ALARM_PERIOD_MINUTES });
+        }
+      });
+    } else {
+      chrome.alarms.clear(ALARM_NAME);
+    }
+    sendResponse({ ok: true });
+    return false;
+  }
+
   if (msg.type !== 'setBadge') return;
   const tabId = sender.tab?.id;
   if (!tabId) return;

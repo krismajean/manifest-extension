@@ -1,5 +1,6 @@
 // popup.js
 const WIKI_BASE = 'https://en.wikipedia.org/wiki/List_of_people_named_in_the_Epstein_files#';
+const BUILTIN_LIST_COUNT = 156;
 
 const COLORS = [
   { hex: '#ffe066', label: 'Yellow' },
@@ -10,9 +11,9 @@ const COLORS = [
 // ── Storage: prefs + status ───────────────────────────────────────────────────
 chrome.storage.local.get(
   ['epsteinNames', 'namesFetchedAt', 'enabled', 'showIcon', 'showHighlight',
-   'highlightColor', 'iconColor'],
+   'highlightColor', 'iconColor', 'autoSyncWiki'],
   (result) => {
-    const count = result.epsteinNames?.length ?? 155;
+    const count = result.epsteinNames?.length ?? BUILTIN_LIST_COUNT;
     const fetched = result.namesFetchedAt;
 
     let sourceStr;
@@ -63,6 +64,24 @@ chrome.storage.local.get(
       document.getElementById('redactRow').classList.remove('active');
     });
 
+    // Auto-sync from Wikipedia (turning ON requests Wikipedia permission first)
+    const cbAutoSync = document.getElementById('autoSyncWiki');
+    const statusEl = document.getElementById('status');
+    cbAutoSync.checked = result.autoSyncWiki === true;
+    cbAutoSync.addEventListener('change', async () => {
+      const enabled = cbAutoSync.checked;
+      if (enabled) {
+        const granted = await chrome.permissions.request({ origins: ['https://en.wikipedia.org/*'] });
+        if (!granted) {
+          cbAutoSync.checked = false;
+          statusEl.textContent = statusEl.textContent.replace(/^(\d+ names tracked)/, '$1 · auto-sync needs Wikipedia access');
+          return;
+        }
+      }
+      chrome.storage.local.set({ autoSyncWiki: enabled });
+      chrome.runtime.sendMessage({ type: 'setAutoSync', enabled }, () => { void chrome.runtime.lastError; });
+    });
+
     // Redact row
     const redactRow = document.getElementById('redactRow');
     if (isRedact) redactRow.classList.add('active');
@@ -107,10 +126,40 @@ const DEFAULTS = {
   showIcon: true,
   highlightColor: '#ffe066',
   iconColor: '#ffe066',
+  autoSyncWiki: false,
 };
 
 document.getElementById('resetBtn').addEventListener('click', () => {
   chrome.storage.local.set(DEFAULTS, () => window.location.reload());
+});
+
+// Sync from Wikipedia (one-time). Requests optional host permission first; if auto-sync is on, background will schedule alarm.
+document.getElementById('refreshListBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('refreshListBtn');
+  const statusEl = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = 'Syncing…';
+  try {
+    const granted = await chrome.permissions.request({ origins: ['https://en.wikipedia.org/*'] });
+    if (!granted) {
+      statusEl.textContent = 'Wikipedia access was denied. Using built-in name list.';
+      btn.disabled = false;
+      btn.textContent = 'Sync from Wikipedia';
+      return;
+    }
+    const res = await chrome.runtime.sendMessage({ type: 'refreshNames' });
+    if (res?.ok) {
+      statusEl.textContent = `${res.count} names tracked · just updated`;
+    } else {
+      statusEl.textContent = res?.error === 'Permission not granted'
+        ? 'Permission not granted. Using built-in list.'
+        : `${res?.count ?? '?'} names · update failed`;
+    }
+  } catch (_) {
+    statusEl.textContent = 'Sync failed (reopen popup to retry)';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Sync from Wikipedia';
 });
 
 function updateSubToggles(enabled) {

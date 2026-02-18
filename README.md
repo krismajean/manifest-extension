@@ -17,7 +17,7 @@ When you visit any webpage, Manifest scans the text for names listed in the Wiki
 - The extension's **toolbar badge** shows a count of total mentions on the page
 - Clicking the icon opens that person's section on the Wikipedia list in a new tab
 
-The name list is fetched from Wikipedia and cached locally, refreshing automatically once a day.
+The extension starts with a built-in name list. You can update it from Wikipedia by clicking **Sync from Wikipedia** in the popup; Chrome may then ask for access to en.wikipedia.org. If you grant it, the list is fetched and cached locally. You can also enable **Auto-sync (every 24 hours)** in the popup; when that is on and permission is granted, the list refreshes automatically every 24 hours and on browser startup when the cache is stale. If you don’t grant access, the extension keeps using the built-in list.
 
 ---
 
@@ -66,7 +66,7 @@ manifest-extension/
 ├── background/
 │   └── service-worker.js      # Fetches & caches name list, manages toolbar badge
 ├── content/
-│   ├── names.js               # Hardcoded fallback name list (~155 people)
+│   ├── names.js               # Hardcoded fallback name list (~156 people)
 │   └── content.js             # Page scanner, DOM injection, highlight logic
 ├── icons/
 │   ├── manifest.svg           # Inline icon shown next to names

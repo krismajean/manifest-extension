@@ -3,8 +3,8 @@
   "name": "Manifest BETA",
   "version": "1.0.0",
   "description": "THIS EXTENSION IS FOR BETA TESTING. Highlights names from the Epstein files as you browse.",
-  "permissions": ["storage", "alarms", "tabs", "scripting"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": ["storage", "activeTab", "alarms"],
+  "optional_host_permissions": ["https://en.wikipedia.org/*"],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"
