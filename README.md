@@ -61,7 +61,7 @@ Epstein Files Highlighter is available on the [Chrome Web Store](https://chromew
 ## Project structure
 
 ```
-manifest-extension/
+epstein-files-highlighter/
 ├── manifest.json              # Extension manifest (MV3)
 ├── background/
 │   └── service-worker.js      # Fetches & caches name list, manages toolbar badge
